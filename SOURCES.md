@@ -22,4 +22,4 @@ LLM assistance:
 
 - OpenAI Codex assisted with interpreting requirements, planning, implementation, and verification. The implementation worker used GPT-6.1 Sol with high reasoning effort; the evaluation worker used GPT-6 Luna with high reasoning effort.
 - `llm_logs.csv` follows the same format as MP2: one actual shareable MP3 conversation URL per line, with no header.
-- **Pending before submission:** add the real MP3 chatlog URLs, including the implementation/debugging assistance, and complete the course's LLM survey answers. The empty log file is not a completed disclosure.
+- **Chatlog added:** `llm_logs.csv` contains the public share link for the MP3 planning, implementation, evaluation, and deployment conversation. Complete the course's LLM survey answers in the submission form.
