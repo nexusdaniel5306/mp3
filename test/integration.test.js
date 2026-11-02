@@ -30,11 +30,16 @@ test('Atlas API integration', { skip: process.env.MP3_INTEGRATION !== '1' }, asy
     var missing = new mongoose.Types.ObjectId().toString();
     var deadline = '2026-11-03T12:00:00.000Z';
 
-    async function request(method, path, body, status = 200) {
+    async function request(method, path, body, status = method === 'DELETE' ? 204 : 200) {
         var response = await fetch(base + path, {
             method, headers: { 'Content-Type': 'application/json' },
             body: body === undefined ? undefined : JSON.stringify(body)
         });
+        if (status === 204) {
+            assert.equal(response.status, 204, method + ' ' + path);
+            assert.equal(await response.text(), '', '204 response must have no body');
+            return;
+        }
         var result = await response.json();
         assert.equal(typeof result.message, 'string');
         assert.ok(Object.hasOwn(result, 'data'));
@@ -174,7 +179,7 @@ test('Atlas API integration', { skip: process.env.MP3_INTEGRATION !== '1' }, asy
         assert.deepEqual(done.map(task => task._id), [completed._id]);
     });
 
-    await t.test('deletion cleans pending and completed references and returns JSON', async function () {
+    await t.test('deletion cleans pending and completed references and returns empty 204', async function () {
         var task = await request('POST', '/tasks', { name: prefix + '-delete', deadline, assignedUser: a._id }, 201);
         await request('DELETE', '/tasks/' + task._id);
         assert.deepEqual((await request('GET', '/users/' + a._id)).pendingTasks, []);

@@ -52,16 +52,14 @@ router.put('/:id', async function (req, res) {
 });
 
 router.delete('/:id', async function (req, res) {
-    var deleted = await helpers.transaction(async function (session) {
+    await helpers.transaction(async function (session) {
         var user = await helpers.findResource(User, req.params.id, session);
         await Task.updateMany({ assignedUser: user._id.toString() }, {
             $set: { assignedUser: '', assignedUserName: 'unassigned' }
         }, { session });
         await user.deleteOne({ session });
-        return user.toObject();
     });
-    // Provisional DELETE choice: 200 preserves the required JSON envelope.
-    res.json({ message: 'User deleted', data: deleted });
+    res.status(204).end();
 });
 
 module.exports = router;

@@ -47,7 +47,7 @@ router.put('/:id', async function (req, res) {
 });
 
 router.delete('/:id', async function (req, res) {
-    var deleted = await helpers.transaction(async function (session) {
+    await helpers.transaction(async function (session) {
         var task = await helpers.findResource(Task, req.params.id, session);
         if (task.assignedUser) {
             await User.updateOne({ _id: task.assignedUser }, {
@@ -55,9 +55,8 @@ router.delete('/:id', async function (req, res) {
             }, { session });
         }
         await task.deleteOne({ session });
-        return task.toObject();
     });
-    res.json({ message: 'Task deleted', data: deleted });
+    res.status(204).end();
 });
 
 module.exports = router;

@@ -2,7 +2,7 @@
 
 Due: **Tuesday, November 3, 2026, at 11:59 PM Central Time.**
 
-**Current status — November 2:** Local implementation and Atlas integration verification are complete. GPT-6.1 Sol implemented the API; GPT-6 Luna independently evaluated it. Under Node 24.18.0, `npm test` passed 6 tests with the opt-in integration test skipped; the separate `npm run test:integration` passed 7 tests with no failures or skips. The integration checks exercised relationships, full PUT behavior, queries, deletion, and rollback after a controlled failure. The awaited cleanup hook removed only recorded test fixture IDs. Evaluation found an incomplete hostname in the private local URI; it was corrected to the screenshot-confirmed, DNS-verified Atlas hostname while preserving credentials and other URI contents. No source correction was needed during evaluation. No commit, push, Render deployment, official grader run, or form submission has occurred. Actual MP3 chatlog links are still pending.
+**Current status — November 2:** The API was implemented, reviewed, tested against Atlas, committed, pushed, and deployed to https://cs409-mp3-zq4q.onrender.com. The first official self-check scored 90/100: all items passed except successful DELETE responses, which must be 204 with no body. Both routes and the integration tests have been corrected; the updated Atlas integration run passed all 7 tests with no failures/skips and cleaned its fixtures. The earlier non-database run passed 6 tests. The corrected deployment and final grader result are pending. Actual MP3 chatlog links and form submission are still pending.
 
 The remaining sections retain the implementation plan and its initial baseline; unchecked checklist entries should not be read as a detailed test execution report.
 
@@ -14,7 +14,7 @@ Build the specified task-management API with Node 24, Express, Mongoose, MongoDB
 
 Adapt the general helper guide accordingly: API request/response and database checks replace visual/viewport checks; the starter has no production build script. Do not import MP1/MP2 requirements. Daniel has explicitly requested the same LLM disclosure format as MP2: `llm_logs.csv`, one real shareable chat URL per line, without a header. Include MP3 sessions only; do not copy the MP2 links.
 
-November 2 follow-up: Daniel authorized local implementation by a GPT-6.1 Sol worker with high reasoning effort while he sets up Atlas. He inspected the submission form and confirmed required public GitHub repository and deployed Render API URL fields. GitHub metadata confirms the existing repository is public. Node 24.18.0 is installed locally and the worker is using it. The worker created the ignored `.env` from the example for Daniel to fill in. Publishing and final submission remain later steps.
+November 2 follow-up: Daniel authorized local implementation by a GPT-6.1 Sol worker with high reasoning effort while he sets up Atlas. He inspected the submission form and confirmed required public GitHub repository and deployed Render API URL fields. GitHub metadata confirms the existing repository is public. Node 24.18.0 is installed locally and the worker is using it. The worker created the ignored `.env` from the example for Daniel to fill in. Publishing was subsequently authorized during wrap-up; final form submission remains Daniel’s step.
 
 **Observed starting point**
 
@@ -36,7 +36,7 @@ November 2 follow-up: Daniel authorized local implementation by a GPT-6.1 Sol wo
 | Required User and Task schemas | Expand `models/user.js`; add `models/task.js` | Verify returned fields, types, required fields, defaults, and persisted records |
 | Requirement 1: Atlas database and specified network access | Local environment and Render environment; `server.js` | Real requests persist data in Atlas; deployed API can reach it |
 | Requirements 2–3: response envelopes and safe messages | Route responses and central error middleware in `server.js` | Every JSON response has `message` and `data`; no raw database errors or stack traces |
-| Requirement 4: status codes | Route validation and error handling | Assert status as well as body for every success/error case; resolve DELETE ambiguity below |
+| Requirement 4: status codes | Route validation and error handling | Assert status as well as body for every success/error case; successful DELETE returns 204 with an empty body, confirmed by the grader |
 | Requirement 5: database-side query handling | Small shared GET-query helper used by both route modules | Verify combinations of filtering, sorting, projection, pagination, and count; inspect use of Mongoose queries |
 | Requirement 6: validation and unique emails | Models plus request validation | Reject missing/invalid fields and duplicate email on POST and PUT; allow keeping one's own email |
 | Requirement 7: two-way references | Explicit mutation logic in the two route modules, using database transactions | Read both sides after each mutation and confirm failed requests preserve state |
@@ -102,7 +102,7 @@ Validation order matters: check the resource in the URL first (404), then field 
 
 **Ambiguities to resolve without silently inventing course requirements**
 
-1. **DELETE status/body:** The README asks for JSON response envelopes and lists 204 among expected codes, but never maps successful DELETE to a precise status/body. HTTP 204 cannot contain a JSON body ([HTTP specification, section 15.3.5](https://www.rfc-editor.org/rfc/rfc9110.html#section-15.3.5)). Ask course staff whether DELETE should be 200 with `{message, data}` or 204 with an empty body. Proposed provisional choice is 200 with a JSON envelope, with 204 available for OPTIONS; this is an interpretation, not a confirmed grading rule. Keep this decision easy to adjust and verify it against the self-check.
+1. **DELETE status/body (resolved by official grader):** Successful DELETE must return **204 with an empty body**. The initial 200 JSON implementation lost both DELETE items; the feedback explicitly required 204/no body. Both routes and the integration tests now enforce this. JSON envelopes apply to responses with JSON content, including DELETE errors.
 
 2. **Count and pagination:** The README says count matching documents but does not explicitly settle `count=true` combined with skip/limit. Proposed interpretation: return the total matching `where` before pagination, unaffected by select/sort. Validate the syntax of supplied applicable parameters even in count mode. Confirm through staff guidance or available grader feedback; passing an undisclosed grader does not prove every combination was tested.
 
@@ -116,7 +116,7 @@ These are the default ownership boundaries for the later implementation. Codex c
 
 | When | Daniel's action | What unlocks the next step |
 |---|---|---|
-| Form inspected; clarification still optional | Daniel confirmed the public GitHub repository URL and deployed Render API URL fields. Use the MP2 log-file format as requested. Check course announcements/Piazza for DELETE/count clarification if available. | Known submission fields are recorded; any clarification can inform the provisional implementation |
+| Form inspected; clarification still optional | Daniel confirmed the public GitHub repository URL and deployed Render API URL fields. Use the MP2 log-file format as requested. DELETE is now resolved by official grader feedback; count-before-pagination remains the documented interpretation. | Known submission fields are recorded; any clarification can inform the provisional implementation |
 | Verified | The existing `nexusdaniel5306/mp3` GitHub repository is public, confirmed through GitHub metadata. | No repository visibility change needed |
 | Before database tests | Sign into MongoDB Atlas and create/select an assignment cluster. Create a database user with read/write access to the assignment database; these credentials are different from the Atlas account login. | A working database user and cluster |
 | Before database tests | Add the README-required “Allow access from anywhere” network entry (`0.0.0.0/0`). Copy the application's connection URI and choose an explicit database name for MP3. | Local and Render processes can connect |
