@@ -4,6 +4,7 @@ Assignment requirements and starter code:
 
 - The course-provided `README.md`, `FAQ.md`, and starter files in this repository.
 - The local `MP_HELPER_GUIDE.md` for the assignment-completion workflow.
+- The professor's Render setup slide supplied as a screenshot, and feedback from the course-provided `submit.js` autograder.
 
 External documentation consulted during planning and implementation:
 
@@ -13,6 +14,9 @@ External documentation consulted during planning and implementation:
 - [Render Node version configuration](https://render.com/docs/node-version): selecting Node 24 and avoiding an unbounded version range.
 - [HTTP semantics, section 15.3.5](https://www.rfc-editor.org/rfc/rfc9110.html#section-15.3.5): a 204 response cannot contain a JSON body.
 - [MongoDB connection strings](https://www.mongodb.com/docs/manual/reference/connection-string/): Atlas URI format and credential encoding.
+- [Atlas database users](https://www.mongodb.com/docs/atlas/security-add-mongodb-users/): database credentials and access roles.
+- [Atlas IP access lists](https://www.mongodb.com/docs/atlas/security/ip-access-list/): required network access configuration.
+- [Render Free instances](https://render.com/docs/free): selecting the Free service tier and understanding idle startup behavior.
 
 LLM assistance:
 

@@ -2,7 +2,9 @@
 
 Due: **Tuesday, November 3, 2026, at 11:59 PM Central Time.**
 
-**Current status — November 2:** The API was implemented, reviewed, tested against Atlas, committed, pushed, and deployed to https://cs409-mp3-zq4q.onrender.com. The first official self-check scored 90/100: all items passed except successful DELETE responses, which must be 204 with no body. Both routes and the integration tests have been corrected; the updated Atlas integration run passed all 7 tests with no failures/skips and cleaned its fixtures. The earlier non-database run passed 6 tests. The corrected deployment and final grader result are pending. Actual MP3 chatlog links and form submission are still pending.
+**Current status — November 2:** The API is implemented, tested, pushed, and deployed. Application commit `8e48371` passed the official course self-check with **100/100 (20/20 points)** on https://cs409-mp3-zq4q.onrender.com. All 20 grader items passed. Local verification includes 6 non-database tests and a separate Atlas integration run with 7 passing tests, no failures/skips, and cleanup of its own fixtures. The integration run verifies relationships, full PUT behavior, queries, deletion, and transaction rollback. Successful DELETE returns 204 with an empty body, as confirmed by grader feedback. The public GitHub repository is https://github.com/nexusdaniel5306/mp3. `.env` remains ignored and untracked. Source disclosures are in `SOURCES.md`.
+
+**Remaining manual steps:** Daniel will provide actual MP3 chatlog links immediately before submission; add them to `llm_logs.csv` and push that update. Then Daniel must submit the course form using his **@illinois.edu email**, NetID, public repository URL, Render base URL (without `/api`), honest time-spent answer, references, and LLM-use/survey answers. The form says it can be submitted only once. No form submission has occurred. Keep Render and Atlas available through grading.
 
 The remaining sections retain the implementation plan and its initial baseline; unchecked checklist entries should not be read as a detailed test execution report.
 
